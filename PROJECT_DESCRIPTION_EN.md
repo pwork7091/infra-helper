@@ -687,10 +687,37 @@ az webapp log tail --name {your-backend-app} --resource-group {your-rg}
 - **Native HCL Generation:** Direct Terraform code generation via LLM based on RAG (Modules)
 - Azure Verified Modules support
 
-### Phase 4: Enterprise Features
+#### 👤 Personal Workspace & Lifecycle Management
+
+With user identity provided by MSAL (Azure AD) authentication and **Single Sign-On (SSO)**, we can implement a personal workspace with persistent state. Users authenticate once via their corporate account and get seamless access. This requires adding a database layer (e.g., Cosmos DB or PostgreSQL) to track deployments per user.
+
+- **Deployment History:** User sees a list of all their requests with current status (Provisioning, Active, Failed).
+- **Action Center:** For each active environment, management buttons are available:
+  - 🔄 **Redeploy:** Restart the pipeline (fix state/drift).
+  - 🗑️ **Destroy:** Initiate `terraform destroy` for proper resource cleanup.
+  - 📋 **Duplicate:** Create a copy of the environment based on the old prompt.
+
+### Phase 4: Enterprise Features & FinOps
 - Cost optimization suggestions (FinOps)
 - Terraform plan review in portal interface
 - Audit logging dashboard
+
+#### 💀 Automated Resource Cleanup ("The Reaper")
+
+Implementation of automatic cleanup policy to prevent budget leakage in Dev/Test environments.
+
+**Self-Service TTL Selection:**
+- A "Lease Time" selector is added to the portal interface.
+- User independently selects the resource lifetime when creating (e.g., 4 hours, 3 days, 1 week, indefinite).
+- This choice is recorded in the `expiration_date` or `ttl` tag in IR JSON.
+
+**The Reaper Pipeline:**
+- Scheduled pipeline (nightly run) scans Resource Groups via Azure Resource Graph.
+- **Logic:** Finds resources whose user-specified expiration has passed.
+- **Action:** Sends notification and triggers `terraform destroy`.
+
+**Expiration Alerts:**
+- Notifications to owners (via Email/Teams) 24 hours before deletion with the option to extend (Extend Lease) through the portal.
 
 ---
 
