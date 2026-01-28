@@ -696,6 +696,7 @@ With user identity provided by MSAL (Azure AD) authentication and **Single Sign-
   - 🔄 **Redeploy:** Restart the pipeline (fix state/drift).
   - 🗑️ **Destroy:** Initiate `terraform destroy` for proper resource cleanup.
   - 📋 **Duplicate:** Create a copy of the environment based on the old prompt.
+- **Live Expiration Countdown:** Real-time timer showing time remaining until automatic deletion (e.g., "⏱️ 2d 5h 30m"). Includes "Extend Lease" button when less than 24 hours remain.
 
 ### Phase 4: Enterprise Features & FinOps
 - Cost optimization suggestions (FinOps)
